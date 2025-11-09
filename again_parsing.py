@@ -1,4 +1,3 @@
-import logging
 import os
 import json
 from langchain_community.vectorstores import FAISS
@@ -7,9 +6,6 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_core.documents import Document
 
-# --- 1. Setup Logging ---
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-log = logging.getLogger(__name__)
 
 # --- 2. Manual JSON Loading Function (The Correct One) ---
 def load():
@@ -36,10 +32,8 @@ def load():
             doc = Document(page_content=content, metadata=metadata)
             all_docs.append(doc)
             
-        log.info(f"Loaded {len(reviews_data)} documents from product_details.json")
 
     except Exception as e:
-        log.error(f"Failed to load 'product_details.json': {e}")
         return []
 
     # --- Load Customer Feedback ---
@@ -64,30 +58,23 @@ def load():
             doc = Document(page_content=content, metadata=metadata)
             all_docs.append(doc)
 
-        log.info(f"Loaded {len(feedback_data)} documents from customer_feedback.json")
 
     except Exception as e:
-        log.error(f"Failed to load 'customer_feedback.json': {e}")
         return []
         
     return all_docs
 
 def main():
-    log.info("--- STARTING KNOWLEDGE BASE CONSTRUCTION ---")
     
     all_docs = load()
 
     if not all_docs:
-        log.error("No documents were loaded. Exiting.")
         return
 
-    log.info(f"Loaded {len(all_docs)} total documents.")
 
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=100)
     splits = text_splitter.split_documents(all_docs)
-    log.info(f"Split into {len(splits)} text chunks.")
 
-    log.info("Initializing Ollama embedding model...")
     try:
         embeddings_model = HuggingFaceEmbeddings(
             model_name="sentence-transformers/all-MiniLM-L6-v2",
@@ -96,16 +83,12 @@ def main():
 
         embeddings_model.embed_query("test query") 
     except Exception as e:
-        log.error(f"FATAL ERROR: {e}")
         return
 
-    log.info("Embedding documents and building FAISS index...")
     vector_store = FAISS.from_documents(splits, embeddings_model)
     
     vector_store.save_local("json_faiss_index")
     
-    log.info("\n--- KNOWLEDGE BASE CONSTRUCTION COMPLETE  ---")
-    log.info(" FAISS index 'json_faiss_index' has been saved.")
 
 if __name__ == "__main__":
     main()
