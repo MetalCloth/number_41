@@ -102,7 +102,7 @@ streamlit run app.py
 ## 🎬 Demo Video
 
 
-https://github.com/user-attachments/assets/8a9bcbbb-7185-4b2b-ada2-6e678f016c86
+https://github.com/user-attachments/assets/9deed786-ab30-4513-86ed-6a27fd3dccf5
 
 
 
