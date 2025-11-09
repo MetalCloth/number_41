@@ -100,7 +100,11 @@ streamlit run app.py
 ```
 
 ## 🎬 Demo Video
-[Link to demo video - showing the system in action]
+
+
+https://github.com/user-attachments/assets/8a9bcbbb-7185-4b2b-ada2-6e678f016c86
+
+
 
 ## 💀 The Journey (aka What Went Wrong)
 
